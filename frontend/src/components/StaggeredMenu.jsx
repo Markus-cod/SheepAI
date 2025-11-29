@@ -473,15 +473,9 @@ export const StaggeredMenu = ({
           p="1.5em"
           pointerEvents="none"
           zIndex={20}
-          // Add shadow instead of background
-          boxShadow={
-            colorMode === "dark"
-              ? "0 4px 20px rgba(0,0,0,0.3)"
-              : "0 4px 20px rgba(0,0,0,0.1)"
-          }
           bg={
             colorMode === "dark"
-              ? "rgba(26, 32, 44, 0.8)"
+              ? "blue.950"
               : "rgba(255, 255, 255, 0.8)"
           }
           backdropFilter="blur(8px)"

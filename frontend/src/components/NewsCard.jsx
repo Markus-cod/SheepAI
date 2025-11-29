@@ -16,7 +16,6 @@ const MotionBox = motion(Box);
 export const NewsCard = ({
   title,
   description,
-  imageUrl,
   author,
   date,
   category,
@@ -92,12 +91,11 @@ export const NewsCard = ({
           >
             <HStack spacing={4}>
               <HStack spacing={1}>
-                <Icon as={FiUser} boxSize={4} />
-                <Text fontWeight="medium">{author}</Text>
-              </HStack>
-              <HStack spacing={1}>
                 <Icon as={FiClock} boxSize={4} />
                 <Text>{readTime}</Text>
+              </HStack>
+              <HStack spacing={1}>
+                <Badge p={.5} px={1.5}>{category}</Badge>
               </HStack>
             </HStack>
           </HStack>
