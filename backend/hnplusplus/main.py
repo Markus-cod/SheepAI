@@ -168,3 +168,8 @@ def get_summarized_page(_: UserDep, client: ClientDep, id: int) -> str:
 @app.get("/stories/{sorted_by}")
 def get_stories(sorted_by: Literal["top", "new", "best"]) -> list[int]:
     return get_stories_sorted_by(sorted_by)
+
+
+@app.get("/story/{id}")
+def get_story(id: int) -> Item:
+    return get_item(id)
