@@ -8,6 +8,7 @@ dependencies = [
     "pwdlib[argon2]",
     "huggingface_hub",
     "requests",
+    "bs4",
 ]
 
 [build-system]

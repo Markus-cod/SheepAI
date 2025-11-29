@@ -1,15 +1,16 @@
 from datetime import timedelta
 from functools import lru_cache
-from textwrap import dedent
 from typing import Annotated, Literal
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 import requests
 from sqlmodel import select
 from huggingface_hub import InferenceClient
+from bs4 import BeautifulSoup
 
 from hnplusplus.config import Settings
 from hnplusplus.db import SessionDep, create_db_and_tables
+from hnplusplus.generate_content import generate_page
 from hnplusplus.model.hn import Item
 from hnplusplus.model.user import Category, Token, User, UserCreate, UserPublic
 from hnplusplus.security import (
@@ -30,6 +31,15 @@ def get_settings():
 
 SettingsDep = Annotated[Settings, Depends(get_settings)]
 
+
+@lru_cache()
+def get_client(settings: SettingsDep):
+    return InferenceClient(
+        token=settings.hf_api_key, model="mistralai/Mixtral-8x7B-Instruct-v0.1"
+    )
+
+
+ClientDep = Annotated[InferenceClient, Depends(get_client)]
 
 app = FastAPI()
 
@@ -108,26 +118,42 @@ def get_comment(id: int) -> str:
     return item.text or ""
 
 
-@app.get("/summarize")
+def fetch_page_text(story: Item) -> str:
+    html = requests.get(story.url).text if story.url is not None else ""
+
+    soup = BeautifulSoup(html, "html.parser")
+    return soup.get_text(separator="\n", strip=True)
+
+
+@app.get("/summarize/{id}")
 def summarize(_: UserDep, settings: SettingsDep, id: int) -> str:
     story = get_story(id)
     if story is None or story.title is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
 
     sep = "\n---\n"
-    content = requests.get(story.url).text if story.url is not None else ""
-    client = InferenceClient(token=settings.hf_api_key)
+    text = fetch_page_text(story)
+    client = InferenceClient(token=settings.hf_api_key, provider="hf-inference")
     article = f"""\
 # A hackernews story's title comments and content of the page it links to
 Title: {story.title}
+Post content:
+{text}
 Comments (separated by ---):
 {sep.join(map(get_comment, story.kids or []))}
-Post content:
-{content}
 """
 
-    # client.summarization(article)
-    return article
+    summarization = client.summarization(article[:1_000])
+    return summarization.summary_text
+
+
+@app.get("/page/{id}")
+def get_summarized_page(_: UserDep, client: ClientDep, id: int) -> str:
+    story = get_story(id)
+    if story is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND)
+
+    return generate_page(client, fetch_page_text(story))
 
 
 @app.get("/stories/{sorted_by}")
