@@ -4,11 +4,13 @@ from textwrap import dedent
 from typing import Annotated, Literal
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+import requests
 from sqlmodel import select
 from huggingface_hub import InferenceClient
 
 from hnplusplus.config import Settings
 from hnplusplus.db import SessionDep, create_db_and_tables
+from hnplusplus.model.hn import Item
 from hnplusplus.model.user import Category, Token, User, UserCreate, UserPublic
 from hnplusplus.security import (
     UserDep,
@@ -16,7 +18,7 @@ from hnplusplus.security import (
     create_access_token,
     get_password_hash,
 )
-from hnplusplus.utils.hn import get_stories_sorted_by, get_story
+from hnplusplus.utils.hn import get_item, get_stories_sorted_by, get_story
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -99,22 +101,33 @@ def add_category(
         db.refresh(user)
 
 
+def get_comment(id: int) -> str:
+    item = get_item(id)
+    if item.type != "comment":
+        return ""
+    return item.text or ""
+
+
 @app.get("/summarize")
 def summarize(_: UserDep, settings: SettingsDep, id: int) -> str:
     story = get_story(id)
     if story is None or story.title is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
 
+    sep = "\n---\n"
+    content = requests.get(story.url).text if story.url is not None else ""
     client = InferenceClient(token=settings.hf_api_key)
-    response = client.summarization(
-        dedent(
-            f"""\
-    Title: {story.title}
-    """
-        )
-    )
+    article = f"""\
+# A hackernews story's title comments and content of the page it links to
+Title: {story.title}
+Comments (separated by ---):
+{sep.join(map(get_comment, story.kids or []))}
+Post content:
+{content}
+"""
 
-    return response.summary_text
+    # client.summarization(article)
+    return article
 
 
 @app.get("/stories/{sorted_by}")
