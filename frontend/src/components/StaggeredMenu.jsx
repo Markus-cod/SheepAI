@@ -589,7 +589,7 @@ export const StaggeredMenu = ({
                       transition="all 0.15s ease"
                       display="inline-block"
                       textDecoration="none"
-                      pr="1.4em"
+                      pr=".5em"
                       bg="transparent"
                       border="none"
                       color="inherit"
@@ -673,7 +673,7 @@ export const StaggeredMenu = ({
           content: counter(smItem, decimal-leading-zero);
           position: absolute;
           top: 0.1em;
-          right: 0.1em;
+          right: 0.2em;
           font-size: 18px;
           font-weight: 400;
           color: var(--sm-accent, #27C614);
