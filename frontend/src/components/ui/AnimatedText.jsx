@@ -1,5 +1,5 @@
 import { Text } from "@chakra-ui/react";
-import TextType from "./ui/TerminalText";
+import TextType from "./TerminalText";
 
 export const TerminalText = ({ text, speed = 50 }) => {
   return (

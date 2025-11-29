@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
+import { TerminalText } from "./ui/AnimatedText";
 
 const MotionBox = motion(Box);
 
@@ -33,7 +34,6 @@ export const Register = ({ onToggleMode }) => {
     sm: "350px",
     md: "400px",
   });
-  const fontSize = useBreakpointValue({ base: "xl", sm: "2xl" });
   const inputSize = useBreakpointValue({ base: "md", sm: "lg" });
   const buttonSize = useBreakpointValue({ base: "md", sm: "lg" });
   const outerPadding = useBreakpointValue({
@@ -57,13 +57,18 @@ export const Register = ({ onToggleMode }) => {
   };
 
   return (
-    <Box
+    <VStack
       p={outerPadding}
       minH="100vh"
       display="flex"
       alignItems="center"
       justifyContent="center"
     >
+      <TerminalText
+        text="Register"
+        speed={30}
+        fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
+      />
       <MotionBox
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,10 +87,6 @@ export const Register = ({ onToggleMode }) => {
           borderColor={borderColor}
           boxShadow="lg"
         >
-          <Text fontSize={fontSize} fontWeight="bold" textAlign="center" mb={6}>
-            Create Account
-          </Text>
-
           <form onSubmit={handleSubmit}>
             <VStack spacing={4}>
               <FormControl isRequired>
@@ -158,7 +159,6 @@ export const Register = ({ onToggleMode }) => {
           </Text>
         </Box>
       </MotionBox>
-    </Box>
+    </VStack>
   );
 };
-

@@ -16,6 +16,7 @@ import {
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
 import { AuthContext } from "../AuthContext";
+import { TerminalText } from "./ui/AnimatedText";
 
 const MotionBox = motion(Box);
 
@@ -55,13 +56,18 @@ export const Login = ({ onToggleMode }) => {
   };
 
   return (
-    <Box
+    <VStack
       p={padding}
       minH="100vh"
       display="flex"
       alignItems="center"
       justifyContent="center"
     >
+      <TerminalText
+        text="Login"
+        speed={30}
+        fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
+      />
       <MotionBox
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -79,10 +85,6 @@ export const Login = ({ onToggleMode }) => {
           borderColor={borderColor}
           boxShadow="lg"
         >
-          <Text fontSize={fontSize} fontWeight="bold" textAlign="center" mb={6}>
-            Welcome Back
-          </Text>
-
           <form onSubmit={handleSubmit}>
             <VStack spacing={4}>
               <FormControl isRequired>
@@ -155,6 +157,6 @@ export const Login = ({ onToggleMode }) => {
           </Text>
         </Box>
       </MotionBox>
-    </Box>
+    </VStack>
   );
 };

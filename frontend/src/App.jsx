@@ -3,7 +3,7 @@ import { Box, Container, SimpleGrid } from "@chakra-ui/react";
 import { StaggeredMenu } from "./components/StaggeredMenu";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
-import { TerminalText } from "./components/AnimatedText";
+import { TerminalText } from "./components/ui/AnimatedText";
 import { NewsCard } from "./components/NewsCard";
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -103,7 +103,7 @@ function App() {
         return (
           <Container 
             maxW="container.xl" 
-            py={12} 
+            py={120} 
             px={{ base: 4, md: 6, lg: 8 }}
           >
             <Box mb={12} textAlign="center">
