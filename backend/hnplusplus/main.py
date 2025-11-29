@@ -1,5 +1,6 @@
 from datetime import timedelta
 from functools import lru_cache
+from textwrap import dedent
 from typing import Annotated, Literal
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -101,15 +102,21 @@ def add_category(
 @app.get("/summarize")
 def summarize(_: UserDep, settings: SettingsDep, id: int) -> str:
     story = get_story(id)
+    if story is None or story.title is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND)
 
     client = InferenceClient(token=settings.hf_api_key)
     response = client.summarization(
-        text,
+        dedent(
+            f"""\
+    Title: {story.title}
+    """
+        )
     )
 
     return response.summary_text
 
 
 @app.get("/stories/{sorted_by}")
-def get_stories(_: UserDep, sorted_by: Literal["new", "top", "best"]) -> list[int]:
+def get_stories(sorted_by: Literal["top", "new", "best"]) -> list[int]:
     return get_stories_sorted_by(sorted_by)
