@@ -1,0 +1,16 @@
+[project]
+name = "hnplusplus"
+version = "0.0.1"
+dependencies = [
+    "fastapi[standard]",
+    "sqlmodel",
+    "pyjwt",
+    "pwdlib[argon2]"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.basedpyright]
+allowedUntypedLibraries = ["jwt", "sqlmodel"]
