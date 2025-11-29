@@ -1,6 +1,6 @@
 from datetime import timedelta
 from functools import lru_cache
-from typing import Annotated
+from typing import Annotated, Literal
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import select
@@ -15,6 +15,7 @@ from hnplusplus.security import (
     create_access_token,
     get_password_hash,
 )
+from hnplusplus.utils.hn import get_stories_sorted_by, get_story
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -98,11 +99,17 @@ def add_category(
 
 
 @app.get("/summarize")
-def summarize(_: UserDep, settings: SettingsDep, text: str) -> str:
-    client = InferenceClient(token=settings.hf_api_key)
+def summarize(_: UserDep, settings: SettingsDep, id: int) -> str:
+    story = get_story(id)
 
+    client = InferenceClient(token=settings.hf_api_key)
     response = client.summarization(
         text,
     )
 
     return response.summary_text
+
+
+@app.get("/stories/{sorted_by}")
+def get_stories(_: UserDep, sorted_by: Literal["new", "top", "best"]) -> list[int]:
+    return get_stories_sorted_by(sorted_by)

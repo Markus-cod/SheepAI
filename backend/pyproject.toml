@@ -7,6 +7,7 @@ dependencies = [
     "pyjwt",
     "pwdlib[argon2]",
     "huggingface_hub",
+    "requests",
 ]
 
 [build-system]
