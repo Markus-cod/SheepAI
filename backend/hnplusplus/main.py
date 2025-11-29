@@ -1,19 +1,31 @@
 from datetime import timedelta
+from functools import lru_cache
 from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import select
+from huggingface_hub import InferenceClient
 
+from hnplusplus.config import Settings
 from hnplusplus.db import SessionDep, create_db_and_tables
 from hnplusplus.model.user import Category, Token, User, UserCreate, UserPublic
 from hnplusplus.security import (
+    UserDep,
     authenticate_user,
     create_access_token,
-    get_current_active_user,
     get_password_hash,
 )
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+
+@lru_cache()
+def get_settings():
+    return Settings()  # pyright: ignore[reportCallIssue]
+
+
+SettingsDep = Annotated[Settings, Depends(get_settings)]
+
 
 app = FastAPI()
 
@@ -44,7 +56,7 @@ async def login_for_access_token(
 
 @app.get("/users/me/items/", response_model=UserPublic)
 async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_active_user)],
+    current_user: UserDep,
 ):
     return current_user
 
@@ -54,7 +66,7 @@ def create_user(user: UserCreate, session: SessionDep) -> User:
     hashed_password = get_password_hash(user.password)
     db_user = User(
         **user.model_dump(),  # pyright: ignore[reportAny]
-        hashed_password=hashed_password
+        hashed_password=hashed_password,
     )
     session.add(db_user)
     session.commit()
@@ -65,7 +77,7 @@ def create_user(user: UserCreate, session: SessionDep) -> User:
 @app.post("/users/me/category/")
 def add_category(
     db: SessionDep,
-    user: Annotated[User, Depends(get_current_active_user)],
+    user: UserDep,
     category: str,
 ):
     stmt = select(Category).where(Category.name == category)
@@ -83,3 +95,14 @@ def add_category(
         db.add(user)
         db.commit()
         db.refresh(user)
+
+
+@app.get("/summarize")
+def summarize(_: UserDep, settings: SettingsDep, text: str) -> str:
+    client = InferenceClient(token=settings.hf_api_key)
+
+    response = client.summarization(
+        text,
+    )
+
+    return response.summary_text

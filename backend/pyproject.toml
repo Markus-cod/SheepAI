@@ -6,6 +6,7 @@ dependencies = [
     "sqlmodel",
     "pyjwt",
     "pwdlib[argon2]",
+    "huggingface_hub",
 ]
 
 [build-system]
