@@ -3,6 +3,7 @@ from functools import lru_cache
 from typing import Annotated, Literal
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 from sqlmodel import select
 from huggingface_hub import InferenceClient
@@ -42,6 +43,14 @@ def get_client(settings: SettingsDep):
 ClientDep = Annotated[InferenceClient, Depends(get_client)]
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")  # pyright: ignore[reportDeprecated]
