@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doom Scroller</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Background video -->
+    <video id="background" autoplay loop muted playsinline>
+      <source src="videos/bg.mp4" type="video/mp4" />
+    </video>
+
+    <!-- Caption text -->
+    <div id="scrollText"></div>
+
+    <!-- Control form -->
+    <form id="textForm">
+      <label for="voiceSelect" style="color:white; font-weight:600;">
+        Voice:
+      </label>
+      <select id="voiceSelect"></select>
+
+      <textarea
+        id="inputText"
+        placeholder="Enter your story here..."
+        required
+      ></textarea>
+
+      <button type="submit">Play Scene</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
