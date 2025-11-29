@@ -2,9 +2,10 @@ from datetime import timedelta
 from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlmodel import select
 
 from hnplusplus.db import SessionDep, create_db_and_tables
-from hnplusplus.model.user import Token, User, UserCreate, UserPublic
+from hnplusplus.model.user import Category, Token, User, UserCreate, UserPublic
 from hnplusplus.security import (
     authenticate_user,
     create_access_token,
@@ -17,7 +18,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 app = FastAPI()
 
 
-@app.on_event("startup")
+@app.on_event("startup")  # pyright: ignore[reportDeprecated]
 def on_startup():
     create_db_and_tables()
 
@@ -51,8 +52,34 @@ async def read_own_items(
 @app.post("/users/", response_model=UserPublic)
 def create_user(user: UserCreate, session: SessionDep) -> User:
     hashed_password = get_password_hash(user.password)
-    db_user = User(**user.model_dump(), hashed_password=hashed_password)
+    db_user = User(
+        **user.model_dump(),  # pyright: ignore[reportAny]
+        hashed_password=hashed_password
+    )
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
     return db_user
+
+
+@app.post("/users/me/category/")
+def add_category(
+    db: SessionDep,
+    user: Annotated[User, Depends(get_current_active_user)],
+    category: str,
+):
+    stmt = select(Category).where(Category.name == category)
+    existing = db.exec(stmt).first()
+    if existing:
+        db_category = existing
+    else:
+        db_category = Category(name=category)
+        db.add(db_category)
+        db.commit()
+        db.refresh(db_category)
+
+    if db_category not in user.categories:
+        user.categories.append(db_category)
+        db.add(user)
+        db.commit()
+        db.refresh(user)

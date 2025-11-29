@@ -1,4 +1,3 @@
-from __future__ import annotations
 from pydantic import BaseModel
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -26,8 +25,8 @@ class UserCategoryLink(SQLModel, table=True):
 class User(UserBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     hashed_password: str
-    categories: list[Category] = Relationship(
-        back_populates="teams", link_model=UserCategoryLink
+    categories: list["Category"] = Relationship(
+        back_populates="users", link_model=UserCategoryLink
     )
 
 
@@ -43,3 +42,6 @@ class UserCreate(UserBase):
 class Category(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str = Field(unique=True)
+    users: list["User"] = Relationship(
+        back_populates="categories", link_model=UserCategoryLink
+    )
