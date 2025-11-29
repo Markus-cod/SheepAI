@@ -1,6 +1,19 @@
-# {Project Name}
+## Upute
 
-A full-stack web application with FastAPI backend and React frontend.
+Develop an AI-powered system to automatically collect, filter and summarize news
+
+### Problem
+
+- summarize to deicde if article is worth reading
+- require confident, reliable content
+- follow category of interest
+- scheduled updates
+- instead of plain text make a rich presentation format
+
+### Ograničenja
+
+**samo hacker news**
+https://github.com/HackerNews/API
 
 ## Features
 
@@ -37,8 +50,8 @@ sheepai-20251129/
 
 ### Prerequisites
 
-` Python 3.8 or higher `
-` Node.js 18 or higher `
+`Python 3.8 or higher`
+`Node.js 18 or higher`
 
 ### Backend Setup
 
@@ -59,31 +72,35 @@ npm run dev
 ## Running the Application
 
 1. Start the backend server first:
+
 ```bash
 cd backend
 uvicorn main:app --reload --port 8000
 ```
 
 2. Then start the frontend development server:
+
 ```bash
 cd frontend
 npm run dev
 ```
 
 3. Open your browser and navigate to:
+
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:8000
 - API Documentation: http://localhost:8000/docs
 
 ## API Endpoints
 
- - `GET /tasks` - Get all tasks
- - `POST /tasks` - Create a new task
- - `PUT /tasks/{id}` - Update a task
- - `DELETE /tasks/{id}` - Delete a task
- - `GET /health` - Health check
+- `GET /tasks` - Get all tasks
+- `POST /tasks` - Create a new task
+- `PUT /tasks/{id}` - Update a task
+- `DELETE /tasks/{id}` - Delete a task
+- `GET /health` - Health check
 
 ## Development
 
 The backend supports hot reloading - any changes to `main.py` will automatically restart the server.
 The frontend uses Vite for fast development with hot module replacement.
+
