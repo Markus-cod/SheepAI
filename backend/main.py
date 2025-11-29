@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from tinydb import TinyDB, Query
-from typing import List, Optional
 
 app = FastAPI()
 
@@ -21,39 +20,45 @@ app.add_middleware(
 )
 
 # Initialize TinyDB (file-based NoSQL database)
-db = TinyDB('db.json')
+db = TinyDB("db.json")
 Item = Query()
+
 
 class Task(BaseModel):
     title: str
-    description: Optional[str] = None
+    description: str | None = None
     completed: bool = False
+
 
 class TaskResponse(BaseModel):
     doc_id: int
     title: str
-    description: Optional[str] = None
+    description: str | None = None
     completed: bool
+
 
 @app.get("/")
 def read_root():
     return {"message": "FastAPI Backend is running!"}
 
-@app.get("/tasks", response_model=List[TaskResponse])
+
+@app.get("/tasks", response_model=list[TaskResponse])
 def get_tasks():
     all_tasks = db.all()
     # Add doc_id to each task for the frontend
     tasks_with_ids = []
     for task in all_tasks:
         task_dict = task
-        task_dict['doc_id'] = task.doc_id
+        task_dict["doc_id"] = task.doc_id
         tasks_with_ids.append(task_dict)
     return tasks_with_ids
+
 
 @app.post("/tasks", response_model=TaskResponse)
 def create_task(task: Task):
     task_id = db.insert(task.dict())
     return {"doc_id": task_id, **task.dict()}
+
 
 @app.put("/tasks/{task_id}", response_model=TaskResponse)
 def update_task(task_id: int, task: Task):
@@ -62,12 +67,14 @@ def update_task(task_id: int, task: Task):
     db.update(task.dict(), doc_ids=[task_id])
     return {"doc_id": task_id, **task.dict()}
 
+
 @app.delete("/tasks/{task_id}")
 def delete_task(task_id: int):
     if not db.contains(doc_id=task_id):
         raise HTTPException(status_code=404, detail="Task not found")
     db.remove(doc_ids=[task_id])
     return {"message": "Task deleted", "id": task_id}
+
 
 # Health check endpoint
 @app.get("/health")
