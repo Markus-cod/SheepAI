@@ -11,7 +11,8 @@ export const NewsCard = ({
   author, 
   date, 
   category,
-  readTime 
+  readTime,
+  url
 }) => {
   return (
     <MotionBox

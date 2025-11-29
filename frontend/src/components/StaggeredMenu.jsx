@@ -8,7 +8,6 @@ export const StaggeredMenu = ({
   colors = ['#00ff94'],
   items = [
     { label: 'Home', link: '#', view: 'home' },
-    { label: 'News', link: '#', view: 'news' },
     { label: 'Login', link: '#', view: 'login' },
     { label: 'Register', link: '#', view: 'register' }
   ],
