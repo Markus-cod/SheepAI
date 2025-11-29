@@ -14,7 +14,7 @@ def get_story(id: int) -> Item | None:
 
 def get_item(id: int) -> Item:
     response = requests.get(f"{HN_URL}/item/{id}.json")
-    return response.json()
+    return Item(**response.json())
 
 
 def get_stories_sorted_by(sorted_by: Literal["new", "top", "best"]) -> list[int]:
