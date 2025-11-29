@@ -11,3 +11,10 @@ export async function getStory(id) {
   });
   return res.json();
 }
+
+export async function summarize(id) {
+  const res = await fetch(`http://localhost:8000/summarize/${id}`, {
+    method: "GET",
+  });
+  return res.text();
+}

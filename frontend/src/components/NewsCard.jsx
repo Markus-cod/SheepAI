@@ -9,14 +9,16 @@ import {
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { FiClock, FiUser } from "react-icons/fi";
-import { getStory } from "../util";
+import { getStory, summarize } from "../util";
 
 const MotionBox = motion(Box);
 
 export const NewsCard = ({ newsId }) => {
   const [news, setNews] = useState();
+  const [summary, setSummary] = useState();
   useEffect(() => {
     getStory(newsId).then(setNews);
+    summarize(newsId).then(setSummary);
   }, [newsId]);
   const cardHeight = useBreakpointValue({
     base: "auto",
@@ -120,7 +122,7 @@ export const NewsCard = ({ newsId }) => {
               flex="1"
               overflow="hidden"
             >
-              {/* TODO: {description} */}
+              {summary}
             </Text>
           </VStack>
 
@@ -138,7 +140,7 @@ export const NewsCard = ({ newsId }) => {
               _dark={{ color: "gray.400" }}
               fontWeight="medium"
             >
-              {new Date(news.time).toLocaleDateString("en-US", {
+              {new Date(news.time * 1000).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

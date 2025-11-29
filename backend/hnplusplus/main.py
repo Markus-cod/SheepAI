@@ -135,9 +135,9 @@ def fetch_page_text(story: Item) -> str:
 
 
 @app.get("/summarize/{id}")
-def summarize(_: UserDep, settings: SettingsDep, id: int) -> str:
+def summarize(settings: SettingsDep, id: int) -> str:
     story = get_story(id)
-    if story is None or story.title is None:
+    if story.title is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
 
     sep = "\n---\n"
