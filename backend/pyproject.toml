@@ -2,10 +2,10 @@
 name = "hnplusplus"
 version = "0.0.1"
 dependencies = [
-    "fastapi[standard]",
+    "fastapi[all]",
     "sqlmodel",
     "pyjwt",
-    "pwdlib[argon2]"
+    "pwdlib[argon2]",
 ]
 
 [build-system]
