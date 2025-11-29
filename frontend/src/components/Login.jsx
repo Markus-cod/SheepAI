@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -15,10 +15,12 @@ import {
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
+import { AuthContext } from "../AuthContext";
 
 const MotionBox = motion(Box);
 
 export const Login = ({ onToggleMode }) => {
+  const { login } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,24 +28,34 @@ export const Login = ({ onToggleMode }) => {
   const borderColor = useColorModeValue("gray.200", "gray.600");
 
   // Responsive values
-  const padding = useBreakpointValue({ base: "1rem", sm: "2rem", md: "3rem", lg: "5rem" });
+  const padding = useBreakpointValue({
+    base: "1rem",
+    sm: "2rem",
+    md: "3rem",
+    lg: "5rem",
+  });
   const boxPadding = useBreakpointValue({ base: 4, sm: 6, md: 8 });
-  const maxWidth = useBreakpointValue({ base: "100%", sm: "350px", md: "400px" });
+  const maxWidth = useBreakpointValue({
+    base: "100%",
+    sm: "350px",
+    md: "400px",
+  });
   const fontSize = useBreakpointValue({ base: "xl", sm: "2xl" });
   const inputSize = useBreakpointValue({ base: "md", sm: "lg" });
   const buttonSize = useBreakpointValue({ base: "md", sm: "lg" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const elements = e.target.elements;
+    const username = elements.username.value;
+    const password = elements.password.value;
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    login(`grant_type=password&username=${username}&password=${password}`);
     setIsLoading(false);
-    // Handle login logic here
   };
 
   return (
-    <Box 
+    <Box
       p={padding}
       minH="100vh"
       display="flex"
@@ -75,11 +87,12 @@ export const Login = ({ onToggleMode }) => {
             <VStack spacing={4}>
               <FormControl isRequired>
                 <FormLabel fontSize={inputSize === "md" ? "sm" : "md"}>
-                  Email
+                  Username
                 </FormLabel>
                 <Input
-                  type="email"
-                  placeholder="Enter your email"
+                  type="text"
+                  name="username"
+                  placeholder="Enter your username"
                   size={inputSize}
                   focusBorderColor="primary.500"
                 />
@@ -93,6 +106,7 @@ export const Login = ({ onToggleMode }) => {
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    name="password"
                     size={inputSize}
                     focusBorderColor="primary.500"
                   />
@@ -123,8 +137,8 @@ export const Login = ({ onToggleMode }) => {
             </VStack>
           </form>
 
-          <Text 
-            textAlign="center" 
+          <Text
+            textAlign="center"
             mt={4}
             fontSize={inputSize === "md" ? "sm" : "md"}
           >

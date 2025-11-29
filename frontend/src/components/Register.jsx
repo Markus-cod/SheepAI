@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -12,39 +12,52 @@ import {
   InputRightElement,
   IconButton,
   useBreakpointValue,
-} from '@chakra-ui/react'
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-import { motion } from 'framer-motion'
+} from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { motion } from "framer-motion";
 
-const MotionBox = motion(Box)
+const MotionBox = motion(Box);
 
 export const Register = ({ onToggleMode }) => {
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const bgColor = useColorModeValue('white', 'gray.800')
-  const borderColor = useColorModeValue('gray.200', 'gray.600')
+  const bgColor = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
 
   // Responsive values
-  const marginTop = useBreakpointValue({ base: 4, sm: 6, md: 8 })
-  const boxPadding = useBreakpointValue({ base: 4, sm: 6, md: 8 })
-  const maxWidth = useBreakpointValue({ base: "100%", sm: "350px", md: "400px" })
-  const fontSize = useBreakpointValue({ base: "xl", sm: "2xl" })
-  const inputSize = useBreakpointValue({ base: "md", sm: "lg" })
-  const buttonSize = useBreakpointValue({ base: "md", sm: "lg" })
-  const outerPadding = useBreakpointValue({ base: "1rem", sm: "2rem", md: "3rem" })
+  const marginTop = useBreakpointValue({ base: 4, sm: 6, md: 8 });
+  const boxPadding = useBreakpointValue({ base: 4, sm: 6, md: 8 });
+  const maxWidth = useBreakpointValue({
+    base: "100%",
+    sm: "350px",
+    md: "400px",
+  });
+  const fontSize = useBreakpointValue({ base: "xl", sm: "2xl" });
+  const inputSize = useBreakpointValue({ base: "md", sm: "lg" });
+  const buttonSize = useBreakpointValue({ base: "md", sm: "lg" });
+  const outerPadding = useBreakpointValue({
+    base: "1rem",
+    sm: "2rem",
+    md: "3rem",
+  });
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setIsLoading(false)
-    // Handle registration logic here
-  }
+    e.preventDefault();
+    setIsLoading(true);
+    const elements = e.target.elements;
+    const username = elements.username.value;
+    const password = elements.password.value;
+    await fetch("http://localhost:8000/users/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    setIsLoading(false);
+  };
 
   return (
-    <Box 
+    <Box
       p={outerPadding}
       minH="100vh"
       display="flex"
@@ -77,11 +90,12 @@ export const Register = ({ onToggleMode }) => {
             <VStack spacing={4}>
               <FormControl isRequired>
                 <FormLabel fontSize={inputSize === "md" ? "sm" : "md"}>
-                  Email
+                  Username
                 </FormLabel>
                 <Input
-                  type="email"
-                  placeholder="Enter your email"
+                  type="text"
+                  name="username"
+                  placeholder="Enter your username"
                   size={inputSize}
                   focusBorderColor="primary.500"
                 />
@@ -93,14 +107,17 @@ export const Register = ({ onToggleMode }) => {
                 </FormLabel>
                 <InputGroup>
                   <Input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
+                    name="password"
                     placeholder="Create a password"
                     size={inputSize}
                     focusBorderColor="primary.500"
                   />
                   <InputRightElement height="100%">
                     <IconButton
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                       icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                       variant="ghost"
                       size={inputSize === "md" ? "sm" : "md"}
@@ -123,12 +140,12 @@ export const Register = ({ onToggleMode }) => {
             </VStack>
           </form>
 
-          <Text 
-            textAlign="center" 
+          <Text
+            textAlign="center"
             mt={4}
             fontSize={inputSize === "md" ? "sm" : "md"}
           >
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Text
               as="span"
               color="primary.500"
@@ -142,5 +159,6 @@ export const Register = ({ onToggleMode }) => {
         </Box>
       </MotionBox>
     </Box>
-  )
-}
+  );
+};
+
