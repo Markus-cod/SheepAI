@@ -16,9 +16,9 @@ const theme = extendTheme({
     },
   },
   fonts: {
-    heading: "'JetBrains Mono', monospace",
-    body: "'JetBrains Mono', monospace",
-    mono: "'JetBrains Mono', monospace",
+    heading: "'Poppins', sans-serif",
+    body: "'Poppins', sans-serif",
+    mono: "'Poppins', sans-serif", // optional — normally you keep monospace here
   },
   config: {
     initialColorMode: "light",

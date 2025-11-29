@@ -1,6 +1,6 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { Box, useColorMode } from '@chakra-ui/react';
+import { Box, Image, useColorMode } from '@chakra-ui/react';
 
 export const StaggeredMenu = ({ 
   onNavigate,
@@ -427,9 +427,9 @@ export const StaggeredMenu = ({
             pointerEvents="auto"
             fontSize="2xl"
             fontWeight="bold"
-            color={colorMode === 'dark' ? 'white' : 'gray.800'}
+            color={colorMode === 'dark' ? 'primary.500' : 'gray.800'}
           >
-            Modern News
+           <Image src="logo.svg" height={"3rem"} px={2}/> Bit News
           </Box>
 
           <Box
@@ -443,6 +443,7 @@ export const StaggeredMenu = ({
             border="none"
             cursor="pointer"
             fontWeight="medium"
+            fontSize={"2xl"}
             lineHeight={1}
             overflow="visible"
             pointerEvents="auto"

@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { motion } from 'framer-motion'
@@ -24,6 +25,15 @@ export const Register = ({ onToggleMode }) => {
   const bgColor = useColorModeValue('white', 'gray.800')
   const borderColor = useColorModeValue('gray.200', 'gray.600')
 
+  // Responsive values
+  const marginTop = useBreakpointValue({ base: 4, sm: 6, md: 8 })
+  const boxPadding = useBreakpointValue({ base: 4, sm: 6, md: 8 })
+  const maxWidth = useBreakpointValue({ base: "100%", sm: "350px", md: "400px" })
+  const fontSize = useBreakpointValue({ base: "xl", sm: "2xl" })
+  const inputSize = useBreakpointValue({ base: "md", sm: "lg" })
+  const buttonSize = useBreakpointValue({ base: "md", sm: "lg" })
+  const outerPadding = useBreakpointValue({ base: "1rem", sm: "2rem", md: "3rem" })
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
@@ -34,84 +44,103 @@ export const Register = ({ onToggleMode }) => {
   }
 
   return (
-    <MotionBox
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+    <Box 
+      p={outerPadding}
+      minH="100vh"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
     >
-      <Box
-        maxW="400px"
-        mx="auto"
-        mt={8}
-        p={8}
-        bg={bgColor}
-        borderRadius="xl"
-        border="1px"
-        borderColor={borderColor}
-        boxShadow="lg"
+      <MotionBox
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        w="full"
       >
-        <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb={6}>
-          Create Account
-        </Text>
+        <Box
+          maxW={maxWidth}
+          w="full"
+          mx="auto"
+          mt={marginTop}
+          p={boxPadding}
+          bg={bgColor}
+          borderRadius="xl"
+          border="1px"
+          borderColor={borderColor}
+          boxShadow="lg"
+        >
+          <Text fontSize={fontSize} fontWeight="bold" textAlign="center" mb={6}>
+            Create Account
+          </Text>
 
-        <form onSubmit={handleSubmit}>
-          <VStack spacing={4}>
-            <FormControl isRequired>
-              <FormLabel>Email</FormLabel>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                size="lg"
-                focusBorderColor="primary.500"
-              />
-            </FormControl>
-
-            <FormControl isRequired>
-              <FormLabel>Password</FormLabel>
-              <InputGroup>
+          <form onSubmit={handleSubmit}>
+            <VStack spacing={4}>
+              <FormControl isRequired>
+                <FormLabel fontSize={inputSize === "md" ? "sm" : "md"}>
+                  Email
+                </FormLabel>
                 <Input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Create a password"
-                  size="lg"
+                  type="email"
+                  placeholder="Enter your email"
+                  size={inputSize}
                   focusBorderColor="primary.500"
                 />
-                <InputRightElement height="100%">
-                  <IconButton
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                    variant="ghost"
-                    onClick={() => setShowPassword(!showPassword)}
+              </FormControl>
+
+              <FormControl isRequired>
+                <FormLabel fontSize={inputSize === "md" ? "sm" : "md"}>
+                  Password
+                </FormLabel>
+                <InputGroup>
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Create a password"
+                    size={inputSize}
+                    focusBorderColor="primary.500"
                   />
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
+                  <InputRightElement height="100%">
+                    <IconButton
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                      variant="ghost"
+                      size={inputSize === "md" ? "sm" : "md"}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
 
-            <Button
-              type="submit"
-              colorScheme="primary"
-              size="lg"
-              width="full"
-              isLoading={isLoading}
-              loadingText="Creating account..."
-            >
-              Create Account
-            </Button>
-          </VStack>
-        </form>
+              <Button
+                type="submit"
+                colorScheme="primary"
+                size={buttonSize}
+                width="full"
+                isLoading={isLoading}
+                loadingText="Creating account..."
+              >
+                Create Account
+              </Button>
+            </VStack>
+          </form>
 
-        <Text textAlign="center" mt={4}>
-          Already have an account?{' '}
-          <Text
-            as="span"
-            color="primary.500"
-            fontWeight="bold"
-            cursor="pointer"
-            onClick={onToggleMode}
+          <Text 
+            textAlign="center" 
+            mt={4}
+            fontSize={inputSize === "md" ? "sm" : "md"}
           >
-            Sign in
+            Already have an account?{' '}
+            <Text
+              as="span"
+              color="primary.500"
+              fontWeight="bold"
+              cursor="pointer"
+              onClick={onToggleMode}
+            >
+              Sign in
+            </Text>
           </Text>
-        </Text>
-      </Box>
-    </MotionBox>
+        </Box>
+      </MotionBox>
+    </Box>
   )
 }
